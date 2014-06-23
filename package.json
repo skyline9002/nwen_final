@@ -1,0 +1,15 @@
+{
+  "name": "NWEN304-Project",
+  "version": "0.0.1",
+  "description": "This is a project prototype for NWEN304.",
+  "private": true,
+  "engines": {
+    "node": "0.10.26"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "ejs": "*",
+    "mathjs": "*",
+    "pg": "^3.0.3"
+  }
+}

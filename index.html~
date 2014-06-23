@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Etch</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+    <style>
+        .ui-content {
+            min-height: 85vh;
+        }
+        body,
+        .ui-link {
+            font-size: 1.3em;
+        }
+        #GPS {
+            visibility: hidden;
+        }
+        input,
+        button,
+        .ui-content,
+        body,
+        .ui-link,
+        #topBar,
+        #topBar2,
+        textarea,
+        .ui-btn {
+            font-family: 'Josefin Sans', sans-serif;
+            text-shadow: none;
+            color: #ffffff;
+        }
+        .ui-corner-all, .ui-btn.ui-corner-all {
+            -webkit-border-radius: 0;
+            border-radius: 0;
+        }
+        #header {
+            height: 10vh;
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 4.5vh;
+        }
+        #header h1{
+            margin-top: -1vh;
+        }
+        #rightBtn,
+        #leftBtn {
+            position: absolute;
+            top: 0;
+            height: 10vh;
+            width: 10vh;
+            padding: 0;
+            border-radius: 0;
+            background: none;
+            text-shadow: none;
+            border: none;
+            box-shadow: none;
+        }
+        #leftBtn {
+            left: 0;
+        }
+        #rightBtn {
+            right: 0;
+        }
+        #headlineID{
+            border-radius: 0;
+            border: none;
+        }
+        .ui-content {
+            position: relative;
+            border-style: solid;
+        }
+        .fullscreen-img {
+            z-index: 0;
+            height: 90vh;
+            background-repeat: no-repeat;
+            background-position: center top;
+            padding:0;
+/*            background-size: cover;*/
+        }
+        ul {
+            list-style-type: none;
+        }
+        li {
+            padding: 1vh;
+            height: 10vh;
+            width: 10vh;
+        }
+        ul li svg {
+            height: 7vh;
+        }
+        input{
+            margin-left: 0;
+        }
+        .ui-mobile label, .uploadLabel{
+            background-color: #0086b2;
+            margin-right:0;
+            margin-top: 0;
+            padding-top:0.46em;
+            padding-bottom:0.5em;
+            padding-left: 0.5em;
+            font-size: 1em;
+        }
+        #etchSelector {
+            position: fixed;
+            top: 20vh;
+            -webkit-backface-visibility: hidden;
+        }
+        #etchsContainer {
+            /*            width: 90vh;*/
+            margin-top: 70vh; 	
+            transform: translate3d(0,0,0);
+        }
+        #headerBarFind,
+        #headerBarEtch {
+            position: absolute;
+            z-index: -1;
+        }
+        #headerBarFind {
+            left: -10vh;
+        }
+        #headerBarEtch {
+            right: -10vh;
+        }
+        #etch {
+            background: none;
+        }
+        .pageTitle {
+            text-shadow: none;
+        }
+        #etchBackground {
+            position: absolute;
+            background: rgba(0, 0, 0, 1);
+            left:0;
+            width: 100vw;
+            top: 100vh;
+            height: 100%;
+        }
+        .navIcon {
+            display: block;
+            margin: 0 auto;
+            height: 7vh;
+            margin-top: 1.5vh;
+        }
+        #gradient {
+            width: 100vw;
+            top: 0;
+            left:0;
+            height: 100%;
+            position:absolute;
+
+            background: -moz-linear-gradient(top,  rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 59%, rgba(0,0,0,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.1)), color-stop(59%,rgba(0,0,0,0.3)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.3) 59%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.3) 59%,rgba(0,0,0,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.3) 59%,rgba(0,0,0,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.3) 59%,rgba(0,0,0,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26000000', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+        }
+        .rotating {
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .rotated {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+        }
+        .blue rect{
+            fill: #0086b2;
+        }
+        #story, .ui-shadow-inset{
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Start of first page -->
+    <div data-role="page" id="find" class="ui-content fullscreen-img" style="background-image: url(public/image/)">
+        <div id="header" data-role="header" data-id="persistent" data-position="fixed" data-tap-toggle="false">
+            <svg id="headerBarFind" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%">
+                <rect width="100%" height="100%" style="fill: #0086b2" />
+            </svg>
+            <h1 class="pageTitle">otherEtchings</h1>
+            <a href="#etch" id="leftBtn" data-transition="slide" data-direction="reverse">
+                <img class="navIcon" src="public/image/+.svg">
+            </a>
+            <a href="#" id="rightBtn">
+                <img class="navIcon" src="public/image/many.svg">
+            </a>
+        </div>
+        <!-- /header -->
+        <div id="gradient"></div>
+        <div id="etchBackground"></div>
+        <!-- Story pages -->
+        <div role="main" class="ui-content" id="mainpage">
+            <div id="etchsContainer">
+                <div class="etchContent" id="etch1">
+                    <div id="result1"></div>
+                    <div id="result2"></div>
+                    <div id="result3"></div>
+                </div>
+
+                <div class="etchContent" id="etch2" style="display:none">
+                    <div id="result4"></div>
+                    <div id="result5"></div>
+                    <div id="result6"></div>
+                </div>
+
+                <div class="etchContent" id="etch3" style="display:none">
+                    <div id="result7"></div>
+                    <div id="result8"></div>
+                    <div id="result9"></div>
+                </div>
+
+                <div class="etchContent" id="etch4" style="display:none">
+                    <div id="result10"></div>
+                    <div id="result11"></div>
+                    <div id="result12"></div>
+                </div>
+
+                <div class="etchContent" id="etch5" style="display:none">
+                    <div id="result13"></div>
+                    <div id="result14"></div>
+                    <div id="result15"></div>
+                </div>
+                <!-- /Story pages -->
+            </div>
+
+            <div id="etchSelector">
+                <ul id="etchSelectorBtns">
+                    <li>
+                        <a id="btn1" href="#etch1">
+                            <svg class="rotating rotated blue" viewbox="0 0 64 64">
+                                <rect x="24" y="0" transform="matrix(0.7071 0.7071 -0.7071 0.7071 32 -13.2548)" fill="#FFFFFF" width="16" height="64" />
+                                <rect x="24" y="0" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.2548 32)" fill="#FFFFFF" width="16" height="64" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btn2" href="#etch2">
+                            <svg class="rotating" viewbox="0 0 64 64">
+                                <rect x="24" y="0" transform="matrix(0.7071 0.7071 -0.7071 0.7071 32 -13.2548)" fill="#FFFFFF" width="16" height="64" />
+                                <rect x="24" y="0" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.2548 32)" fill="#FFFFFF" width="16" height="64" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btn3" href="#etch3">
+                            <svg class="rotating" viewbox="0 0 64 64">
+                                <rect x="24" y="0" transform="matrix(0.7071 0.7071 -0.7071 0.7071 32 -13.2548)" fill="#FFFFFF" width="16" height="64" />
+                                <rect x="24" y="0" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.2548 32)" fill="#FFFFFF" width="16" height="64" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btn4" href="#etch4">
+                            <svg class="rotating" viewbox="0 0 64 64">
+                                <rect x="24" y="0" transform="matrix(0.7071 0.7071 -0.7071 0.7071 32 -13.2548)" fill="#FFFFFF" width="16" height="64" />
+                                <rect x="24" y="0" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.2548 32)" fill="#FFFFFF" width="16" height="64" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btn5" href="#etch5">
+                            <svg class="rotating" viewbox="0 0 64 64">
+                                <rect x="24" y="0" transform="matrix(0.7071 0.7071 -0.7071 0.7071 32 -13.2548)" fill="#FFFFFF" width="16" height="64" />
+                                <rect x="24" y="0" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.2548 32)" fill="#FFFFFF" width="16" height="64" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- /content -->
+    </div>
+    <!-- /page -->
+
+
+    <!-- Start of second page -->
+    <div data-role="page" id="etch">
+        <div id="imgTint"></div>
+        <div data-role="header" id="header" data-id="persistent" data-position="fixed" data-tap-toggle="false">
+            <svg id="headerBarEtch" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%">
+                <rect width="100%" height="100%" style="fill: #0086b2" />
+            </svg>
+
+            <h1 class="pageTitle">Etch</h1>
+
+            <a href="#" id="leftBtn">
+                <img src="public/image/+.svg" class="navIcon">
+            </a>
+            <a href="#find" id="rightBtn" data-transition="slide">
+                <img class="navIcon" src="public/image/many.svg">
+            </a>
+        </div>
+        <!--header-->
+        <div role="main" class="ui-content">
+
+            <form method="post" enctype="multipart/form-data" action="http://rocky-hamlet-2798.herokuapp.com/base/upload" data-ajax="false">
+                <div class="ui-field-contain">
+                    <label class="uploadLabel" for="text-2">Headline:</label>
+                    <input type="text" name="headline" placeholder="Headline" id="headlineID">
+                </div>
+                
+                <br>
+                
+                <div class="ui-field-contain">
+                    <label class="uploadLabel" for="text-2">Author:</label>
+                    <input type="text" name="author" placeholder="Author (Optional)" id="authorID">
+                </div>
+                
+                <br>
+                
+                <div class="ui-field-contain">
+                    <label class="uploadLabel" for="text-2">Etching:</label>
+    <!--                <input type="text" name="etching" placeholder="Your Etching" id="story">-->
+                    <textarea cols="40" rows="2" name="etching" placeholder="Your Etching" id="story"></textarea>
+                </div>
+                
+                <br>
+                <div style="height:0px;overflow:hidden">
+                    <input type="file" id="fileInput" name="fileInput" />
+                </div>
+                
+                 <button onclick="takePicture();">Take Picture</button>
+                <br>
+
+                <input type="hidden" name="latitude" id="lat" />
+                <input type="hidden" name="longitude" id="lng" />
+                <input type="submit" value="Submit your story" id="submitButton" data-icon="plus" data-iconpos="right" data-shadow="false"/>
+            </form>
+        </div>
+        <!-- /content -->
+
+    </div>
+    <!-- /page -->
+
+    <script type="text/javascript">
+        $(document).bind('pageinit', function () {
+            $.ajaxSetup({
+                cache: false
+            });      
+        });
+
+         // Story navigation buttons
+        $(document).ready(function () {
+            var selected = [];
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                var lat = pos.coords.latitude;
+                var lng = pos.coords.longitude;
+                $("#lat").val(lat);
+                $("#lng").val(lng);
+                var jsonUrl = "http://rocky-hamlet-2798.herokuapp.com/data";
+                $.get(jsonUrl, function (data) {
+                    var Stories = [];
+                    var R = 6371; // Radius of the earth in km
+                    for(i = 0; i < data.length; i++) {
+                        var dLat = (data[i].latitude - lat) * Math.PI / 180;  // deg2rad below
+                        var dLon = (data[i].longitude - lng) * Math.PI / 180;
+                        var a = 0.5 - Math.cos(dLat)/2 + Math.cos(lat * Math.PI / 180) * Math.cos(data[i].latitude * Math.PI / 180) * (1 - Math.cos(dLon))/2;
+                        var dist = R * 2 * Math.asin(Math.sqrt(a));
+                        var story = {
+                            "headline": data[i].headline,
+                            "author": data[i].author,
+                            "story": data[i].story,
+                            "image": data[i].image_name,
+                            "latitude": data[i].latitude,
+                            "longitude": data[i].longitude,
+                            "distance" : dist
+                        }
+                        Stories.push(story);
+                    } //for loop
+                    Stories.sort(function(a, b){return a.distance - b.distance});
+                    
+                    for(var i = 0; i < 5; i++) {
+                        selected.push(Stories[i]);
+                    }
+                    
+                    $("#result1").html( "<h1>"+selected[0].headline+"</h1>");
+                    $("#result2").html( "<h2>"+selected[0].author+"</h2>");
+                    $("#result3").html( "<p>"+selected[0].story+"</p>");
+
+                    $("#result4").html( "<h1>"+selected[1].headline+"</h1>");
+                    $("#result5").html( "<h2>"+selected[1].author+"</h2>");
+                    $("#result6").html( "<p>"+selected[1].story+"</p>");
+
+                    $("#result7").html( "<h1>"+selected[2].headline+"</h1>");
+                    $("#result8").html( "<h2>"+selected[2].author+"</h2>");
+                    $("#result9").html( "<p>"+selected[2].story+"</p>");
+
+                    $("#result10").html( "<h1>"+selected[3].headline+"</h1>");
+                    $("#result11").html( "<h2>"+selected[3].author+"</h2>");
+                    $("#result12").html( "<p>"+selected[3].story+"</p>");
+
+                    $("#result13").html( "<h1>"+selected[4].headline+"</h1>");
+                    $("#result14").html( "<h2>"+selected[4].author+"</h2>");
+                    $("#result15").html( "<p>"+selected[4].story+"</p>");
+                    var image = $('#find');
+                    if(selected[0].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[0].image + ')',
+                        'background-size' : 'cover'
+                    });
+                    } else {image.css('background-image', 'url(../public/image)');}
+                }, 'json');
+            });
+            //Initial etch height
+            var etchHeight = $("#etch1").height();
+            $("#etchBackground").css("height", etchHeight*1.5);
+            
+            var index;
+            $("#btn1").click(function () {
+                $("#etch1").show();
+                $("#etch2").hide();
+                $("#etch3").hide();
+                $("#etch4").hide();
+                $("#etch5").hide();
+
+                var btnImg = $("#btn1 .rotating");
+                $(".rotated").attr("class", "rotating");
+                btnImg.attr("class", "rotating rotated blue");
+
+                var etchHeight = $("#etch1").height();
+                $("#etchBackground").css("height", etchHeight);
+                var image = $('#find');
+                if(selected[0].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[0].image + ')',
+                        'background-size' : 'cover'
+                    });
+                } else {image.css('background-image', 'url(../public/image)');}
+
+            });
+
+            $("#btn2").click(function () {
+                $("#etch2").show();
+                $("#etch1").hide();
+                $("#etch3").hide();
+                $("#etch4").hide();
+                $("#etch5").hide();
+
+                var btnImg = $("#btn2 .rotating");
+                $(".rotated").attr("class", "rotating");
+                btnImg.attr("class", "rotating rotated blue");
+
+                var etchHeight = $("#etch2").height();
+                $("#etchBackground").css("height", etchHeight);
+                var image = $('#find');
+                if(selected[1].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[1].image + ')',
+                        'background-size' : 'cover'
+                    });
+                } else {image.css('background-image', 'url(../public/image)');}
+
+            });
+
+            $("#btn3").click(function () {
+                $("#etch3").show();
+                $("#etch2").hide();
+                $("#etch1").hide();
+                $("#etch4").hide();
+                $("#etch5").hide();
+
+                var btnImg = $("#btn3 .rotating");
+                $(".rotated").attr("class", "rotating");
+                btnImg.attr("class", "rotating rotated blue");
+
+                var etchHeight = $("#etch3").height();
+                $("#etchBackground").css("height", etchHeight);
+                var image = $('#find');
+                if(selected[2].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[2].image + ')',
+                        'background-size' : 'cover'
+                    });
+                } else {image.css('background-image', 'url(../public/image)');}
+
+            });
+
+            $("#btn4").click(function () {
+                $("#etch4").show();
+                $("#etch2").hide();
+                $("#etch3").hide();
+                $("#etch1").hide();
+                $("#etch5").hide();
+
+                var btnImg = $("#btn4 .rotating");
+                $(".rotated").attr("class", "rotating");
+                btnImg.attr("class", "rotating rotated blue");
+
+                var etchHeight = $("#etch4").height();
+                $("#etchBackground").css("height", etchHeight);
+                var image = $('#find');
+                if(selected[3].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[3].image + ')',
+                        'background-size' : 'cover'
+                    });
+                } else {image.css('background-image', 'url(../public/image)');}
+
+            });
+
+            $("#btn5").click(function () {
+                $("#etch5").show();
+                $("#etch2").hide();
+                $("#etch3").hide();
+                $("#etch4").hide();
+                $("#etch1").hide();
+
+                var btnImg = $("#btn5 .rotating");
+                $(".rotated").attr("class", "rotating");
+                btnImg.attr("class", "rotating rotated blue");
+
+                var etchHeight = $("#etch5").height();
+                $("#etchBackground").css("height", etchHeight);
+                var image = $('#find');
+                if(selected[4].image!=null) {
+                    image.css({
+                        'background-image' : 'url(http://rocky-hamlet-2798.herokuapp.com/base/uploads/' + selected[4].image + ')',
+                        'background-size' : 'cover'
+                    });
+                } else {image.css('background-image', 'url(../public/image)');}
+
+            });
+
+            // Calculating widths of story and the navigation
+            var viewHeight;
+            var viewWidth;
+            if (typeof window.innerWidth != undefined) {
+                viewHeight = window.innerHeight;
+                viewWidth = window.innerWidth;
+                document.getElementById("etchsContainer").style.width = viewWidth - (0.18 * viewHeight) + 'px';
+                document.getElementById("etchSelector").style.left = viewWidth - (0.17*viewHeight) + 'px';
+            }                
+            var mylatesttap;
+            $("#mainpage").click( function doubletap() {
+//                    console.log('click');
+//                    console.log(mylatesttap);
+                    var now = new Date().getTime();
+//                    console.log(now);
+                    var timesince = now - mylatesttap;
+//                    console.log(timesince);
+                    
+                    if((timesince < 600) && (timesince > 0)){
+                        // double tap   
+//                        console.log('double tap');
+                        $("#header").fadeToggle( "slow", "linear" );
+                        $("#etchSelector").fadeToggle( "slow", "linear" );
+                        $("#etchsContainer").fadeToggle( "slow", "linear" );
+                        $("#gradient").fadeToggle( "slow", "linear" );
+                        $("#etchBackground").fadeToggle( "slow", "linear" );
+                        
+                        
+                        
+                        //$("#fullscreen-img").css("background-size", contain);
+                    }else{
+                            // too much time to be a doubletap
+
+//                        console.log('not double tap');
+                         }
+
+                    mylatesttap = new Date().getTime();
+//                    console.log(mylatesttap);
+
+                }
+            );
+
+        });
+        
+        // Swiping to navigate between pages
+        $(document).on('swiperight','#find', function()
+            { 
+                $.mobile.changePage("#etch", {
+                    transition:"slide",
+                    reverse: true
+                });
+            });     
+        $(document).on('swipeleft','#etch', function()
+            { 
+                $.mobile.changePage("#find", {
+                transition:"slide"
+                }); 
+            });
+        
+        
+        // For the upload page, formatting of the choose file button
+        function chooseFile() {
+            $("#fileInput").click();
+        }
+    </script>
+    <script type="text/javascript" src="phonegap.js"></script>
+</body>
+
+</html>
+
+
