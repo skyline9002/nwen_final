@@ -603,6 +603,7 @@
       function takePicture() {
       navigator.camera.getPicture( function( imageURI ) {
         alert( imageURI );
+	$('#path').attr('placeholder',imageURI);
       },
       function( message ) {
         alert( message );
